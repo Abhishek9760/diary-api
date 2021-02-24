@@ -1,4 +1,4 @@
 /env/*
 ./env/*
 .vscode
-./diaryapi/restconf/constant.py
+/diaryapi/restconf/constant.py
