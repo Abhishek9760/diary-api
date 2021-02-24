@@ -11,11 +11,11 @@ class DiarySerializer(serializers.ModelSerializer):
     # text = serializers.SerializerMethodField()
     # text = serializers.ModelField(model_field=Diary._meta.get_field('text'))
 
-    # def to_representation(self, obj):
-    #     data = super(DiarySerializer, self).to_representation(obj)
-    #     if(len(data['text']) > 10):
-    #         data['text'] = data['text'][:20] + "..."
-    #     return data
+    def to_representation(self, obj):
+        data = super(DiarySerializer, self).to_representation(obj)
+        if(data['image']):
+            data['image'] = 'https://abhi102.pythonanywhere.com/media'+data['image'].split("media_root")[1]
+        return data
 
     class Meta:
         model = Diary
@@ -37,9 +37,9 @@ class DiarySerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         text = data.get("text")
-        image = data.get("image")
-        if not (image or text):
-            raise serializers.ValidationError("Text or Image is Required")
+        title = data.get("title")
+        if not (title and text):
+            raise serializers.ValidationError("title and text can't be empty.")
         return data
 
 

@@ -1,11 +1,9 @@
-from rest_framework.views import APIView
-from rest_framework import generics, mixins, permissions, authentication
+from rest_framework import generics, mixins, permissions
 from rest_framework.response import Response
 
 from .serializers import DiarySerializer, DiaryDetailSerializer
 from diary.models import Diary
-from accounts.api.permissions import IsOwnerOrNotAllowed, IsSelfUserOrAdminUserOrNotAllowed
-
+from accounts.api.permissions import IsOwnerOrNotAllowed
 
 class DiaryAPIDetailView(
     mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.RetrieveAPIView
@@ -21,6 +19,17 @@ class DiaryAPIDetailView(
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        request = self.request
+        data = request.data
+        if(data.get('clear') == '1'):
+            diary_obj = Diary.objects.filter(
+                user__username=request.user.username)
+            diary_obj.update(image=None)
+        else:
+            if serializer.is_valid():
+                serializer.save()
 
     def patch(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)

@@ -3,7 +3,7 @@ from django.conf import settings
 
 
 def upload_diary_image(instance, filename):
-    return f"diary/{instance.user}/{filename}"
+    return f"/home/abhi102/diaryapi/static_cdn/media_root/{instance.user}/{filename}"
 
 
 class DiaryQuerySet(models.QuerySet):
@@ -18,8 +18,9 @@ class DiaryManager(models.Manager):
 class Diary(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    text = models.TextField(null=True, blank=True, max_length=1000)
-    image = models.ImageField(upload_to=upload_diary_image, null=True, blank=True)
+    text = models.TextField(max_length=1000)
+    image = models.ImageField(
+        upload_to=upload_diary_image, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

@@ -25,8 +25,6 @@ class IsSelfUserOrAdminUserOrNotAllowed(permissions.BasePermission):
 
     def has_permission(self, reqeust, view):
         username = view.kwargs.get('username')
-        if reqeust.user.is_superuser:
-            return True
         auth_username = reqeust.user.username
         if username != auth_username:
             return False

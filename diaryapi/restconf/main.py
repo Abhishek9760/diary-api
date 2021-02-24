@@ -1,10 +1,11 @@
-import datetime
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         # 'rest_framework.authentication.BasicAuthentication',
-        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
+        # django-oauth-toolkit >= 1.0.0
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -18,27 +19,41 @@ REST_FRAMEWORK = {
     "ORDERING_PARAM": "ordering",
 }
 
-JWT_AUTH = {
-    "JWT_ENCODE_HANDLER": "rest_framework_jwt.utils.jwt_encode_handler",
-    "JWT_DECODE_HANDLER": "rest_framework_jwt.utils.jwt_decode_handler",
-    "JWT_PAYLOAD_HANDLER": "rest_framework_jwt.utils.jwt_payload_handler",
-    "JWT_PAYLOAD_GET_USER_ID_HANDLER": "rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler",
-    "JWT_RESPONSE_PAYLOAD_HANDLER":
-    # 'rest_framework_jwt.utils.jwt_response_payload_handler',
-    "accounts.api.utils.jwt_response_payload_handler",
-    # 'JWT_SECRET_KEY': settings.SECRET_KEY,
-    # 'JWT_GET_USER_SECRET_KEY': None,
-    # 'JWT_PUBLIC_KEY': None,
-    # 'JWT_PRIVATE_KEY': None,
-    # 'JWT_ALGORITHM': 'HS256',
-    # 'JWT_VERIFY': True,
-    # 'JWT_VERIFY_EXPIRATION': True,
-    # 'JWT_LEEWAY': 0,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
-    # 'JWT_AUDIENCE': None,
-    # 'JWT_ISSUER': None,
-    "JWT_ALLOW_REFRESH": True,
-    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=7),
-    "JWT_AUTH_HEADER_PREFIX": "JWT",
-    "JWT_AUTH_COOKIE": None,
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "984792856479-vbl9011ikj3ais9375j98f9mlik84v68.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "WDYZHuD4vNPUjq7mXMhRh0kD"
+
+
+SOCIAL_AUTH_FACEBOOK_KEY = '3375293559265744'
+SOCIAL_AUTH_FACEBOOK_SECRET = '8e5ac9c00edba750845ebe4d2ec096f6'
+
+
+# Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, name, email'
 }
+
+OAUTH2_PROVIDER = {
+        'ACCESS_TOKEN_EXPIRE_SECONDS': 60 * 60 * 48,
+        'OAUTH_SINGLE_ACCESS_TOKEN': True,
+        'OAUTH_DELETE_EXPIRED': True
+ }
+
+AUTHENTICATION_BACKENDS = (
+    # Facebook OAuth2
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    # Google OAuth2
+    'social_core.backends.google.GoogleOAuth2',
+
+    # DRF Social OAuth
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+)

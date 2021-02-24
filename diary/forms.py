@@ -11,9 +11,7 @@ class DiaryForm(forms.ModelForm):
     def clean(self, *args, **kwargs):
         data = self.cleaned_data
         text = data.get("text")
-        if text == "":
-            text = None
-        image = data.get("image")
-        if text is None and image is None:
-            raise forms.ValidationError("Text or Image is required")
+        title = data.get("title")
+        if not(title and text):
+            raise forms.ValidationError("title and text is required")
         return super().clean(*args, **kwargs)

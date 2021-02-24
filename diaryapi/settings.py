@@ -26,8 +26,9 @@ SECRET_KEY = "g2^lb$55q)72cqwwh#4(f!lw#kur$rte!ts*b%8llz4no^x4_="
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["abhi102.pythonanywhere.com", "killer-coding.ninja"]
 
+AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
 
@@ -42,6 +43,11 @@ INSTALLED_APPS = [
     'corsheaders',
     "accounts",
     "diary",
+
+        # OAUTH
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -125,11 +131,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_my_proj"),
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn", "static_root")
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_root")
+MEDIA_ROOT = os.path.join(BASE_DIR, "static_cdn", "media_root")
 
 CORS_ALLOWED_ORIGINS = [
+    "https://laughing-bose-a55b10.netlify.app",
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "https://killer-coding.ninja"
 ]
+
+
+CORS_REPLACE_HTTPS_REFERER = True
+HOST_SCHEME = "https://"
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_SECONDS = 1000000
+SECURE_FRAME_DENY = True

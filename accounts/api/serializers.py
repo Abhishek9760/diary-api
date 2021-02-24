@@ -5,15 +5,9 @@ from django.utils import timezone
 
 from rest_framework import serializers
 from rest_framework.reverse import reverse as api_reverse
-from rest_framework_jwt.settings import api_settings
 
-expire_delta = api_settings.JWT_REFRESH_EXPIRATION_DELTA
 
 User = get_user_model()
-
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
 
 
 class UserPublicSerializer(serializers.ModelSerializer):
@@ -31,10 +25,10 @@ class UserPublicSerializer(serializers.ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(style={"input_type": "password"}, write_only=True)
-    password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
-    token = serializers.SerializerMethodField(read_only=True)
-    expires = serializers.SerializerMethodField(read_only=True)
+    password = serializers.CharField(
+        style={"input_type": "password"}, write_only=True)
+    password2 = serializers.CharField(
+        style={"input_type": "password"}, write_only=True)
     message = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -44,8 +38,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "password2",
-            "expires",
-            "token",
             "message",
         ]
         extra_kwargs = {"password": {"write_only": True}}
@@ -56,24 +48,17 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_username(self, value):
         qs = User.objects.filter(username__iexact=value)
         if qs.exists():
-            raise serializers.ValidationError("User with this username already exists.")
+            raise serializers.ValidationError(
+                "User with this username already exists.")
         return value
-
-    def get_token(self, obj):
-        user = obj
-        payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload)
-        return token
-
-    def get_expires(self, obj):
-        return timezone.now() + expire_delta - datetime.timedelta(seconds=200)
 
     def validate_email(self, value):
         if not value:
             raise serializers.ValidationError("Email is required")
         qs = User.objects.filter(email__iexact=value)
         if qs.exists():
-            raise serializers.ValidationError("User with this email already exists.")
+            raise serializers.ValidationError(
+                "User with this email already exists.")
         return value
 
     def validate(self, data):
