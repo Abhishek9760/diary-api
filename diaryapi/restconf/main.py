@@ -45,6 +45,8 @@ OAUTH2_PROVIDER = {
         'OAUTH_DELETE_EXPIRED': True
  }
 
+SECRET_KEY = constant.SECRET_KEY
+
 AUTHENTICATION_BACKENDS = (
     # Facebook OAuth2
     'social_core.backends.facebook.FacebookAppOAuth2',
