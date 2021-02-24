@@ -3,3 +3,5 @@
 .vscode
 /diaryapi/restconf/constant.py
 *.pyc
+static_cdn
+db.sqlite3
