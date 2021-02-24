@@ -2,3 +2,4 @@
 ./env/*
 .vscode
 /diaryapi/restconf/constant.py
+*.pyc
